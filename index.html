@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bubble Shooter Game</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <canvas id="canvas" width="800" height="600"></canvas>
+
+  <script src="js/constants.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/collision.js"></script>
+  <script src="js/scoring.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/bubble-woods-min.js"></script>
+
+  <script>
+    // Initialize the game
+    var game = new BubbleWoods.Game('canvas');
+    game.init();
+
+    // Set canvas dimensions based on screen size
+    function setCanvasDimensions() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    // Game loop
+    function gameLoop() {
+      // Calculate delta time
+      var now = Date.now();
+      var deltaTime = now - lastTime;
+      lastTime = now;
+
+      // Update game
+      game.update(deltaTime);
+
+      // Render game
+      game.render(context);
+
+      // Request next frame
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Create game instance
+    var game = new BubbleWoods.Game(canvas);
+
+    // Start the game
+    game.start();
+
+    // Initialize AppLovin SDK and preload reward ad
+    function initializeAppLovin() {
+      applovin_sdk.init({
+        sdk_key: "YOUR_SDK_KEY",
+        reward_callback: function () {
+          // Callback function to handle the rewarded ad completion
+          // Add your code here to reward the player
+          console.log("Reward the player");
+        },
+      });
+
+      applovin_sdk.preloadInterstitial();
+    }
+
+    // Call initializeAppLovin() to initialize AppLovin SDK
+    initializeAppLovin();
+
+    // Show reward ad
+    function showRewardAd() {
+      if (applovin_sdk.isInterstitialReady()) {
+        applovin_sdk.showInterstitial();
+      } else {
+        console.log("Reward ad is not ready");
+      }
+    }
+
+    // Event listeners for AppLovin SDK
+    document.addEventListener("al.onInterstitialLoaded", function () {
+      console.log("Interstitial ad loaded");
+    });
+
+    document.addEventListener("al.onInterstitialLoadFailed", function () {
+      console.log("Interstitial ad failed to load");
+    });
+
+    document.addEventListener("al.onInterstitialClicked", function () {
+      console.log("Interstitial ad clicked");
+    });
+
+    document.addEventListener("al.onInterstitialHidden", function () {
+      console.log("Interstitial ad hidden");
+    });
+
+    // Set initial canvas dimensions
+    setCanvasDimensions();
+
+    // Update canvas dimensions on window resize
+    window.addEventListener("resize", setCanvasDimensions);
+  </script>
+
+  <!-- Include the AppLovin SDK script -->
+  <script src="https://d.applovin.com/s2s/lib/ads.js" crossorigin="anonymous"></script>
+
+  <!-- Add a button to trigger the reward ad -->
+  <button onclick="showRewardAd()">Watch Rewarded Ad</button>
+</body>
+
+</html>
